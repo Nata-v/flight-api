@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+
+    <changeSet id="1" author="Volkova_Natallia">
+        <sql>
+            CREATE TABLE IF NOT EXISTS airport (
+            code VARCHAR(10) PRIMARY KEY,
+            country VARCHAR(128) NOT NULL,
+            city VARCHAR(128) NOT NULL);
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="2" author="Volkova_Natallia">
+        <sql>
+
+            CREATE TABLE IF NOT EXISTS aircraft (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            model VARCHAR(128) NOT NULL);
+        </sql>
+    </changeSet>
+    <changeSet id="3" author="Volkova_Natallia">
+        <sql>
+            CREATE TABLE IF NOT EXISTS seat (
+            aircraft_id INT NOT NULL,
+            seat_no VARCHAR(10) NOT NULL, PRIMARY KEY (aircraft_id, seat_no),
+            FOREIGN KEY (aircraft_id) REFERENCES aircraft (id));
+        </sql>
+    </changeSet>
+    <changeSet id="4" author="Volkova_Natallia">
+        <sql>
+            CREATE TABLE IF NOT EXISTS flight (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            flight_no VARCHAR(10) NOT NULL,
+            departure_date DATE NOT NULL,
+            departure_airport_code VARCHAR(10) NOT NULL,
+            arrival_date DATE NOT NULL,
+            arrival_airport_code VARCHAR(10) NOT NULL,
+            aircraft_id INT NOT NULL,
+            status VARCHAR(10) NOT NULL,
+            FOREIGN KEY(departure_airport_code) REFERENCES airport (code),
+            FOREIGN KEY(arrival_airport_code) REFERENCES airport(code),
+            FOREIGN KEY (aircraft_id) REFERENCES aircraft(id));
+        </sql>
+    </changeSet>
+    <changeSet id="5" author="Volkova_Natallia">
+        <sql>
+            CREATE TABLE IF NOT EXISTS ticket (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            passport_no VARCHAR(20) NOT NULL,
+            passenger_name VARCHAR(128) NOT NULL,
+            flight_id INT NOT NULL,
+            seat_no VARCHAR(10) NOT NULL,
+            cost DECIMAL(10,2) NOT NULL,
+            FOREIGN KEY (flight_id) REFERENCES flight(id),
+            FOREIGN KEY (flight_id, seat_no) REFERENCES seat(aircraft_id, seat_no)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
