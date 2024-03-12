@@ -28,21 +28,22 @@
         <sql>
             CREATE TABLE IF NOT EXISTS seat (
             aircraft_id INT NOT NULL,
-            seat_no VARCHAR(10) NOT NULL, PRIMARY KEY (aircraft_id, seat_no),
+            seat_no VARCHAR(10) NOT NULL,
+            PRIMARY KEY (aircraft_id, seat_no),
             FOREIGN KEY (aircraft_id) REFERENCES aircraft (id));
         </sql>
     </changeSet>
     <changeSet id="4" author="Volkova_Natallia">
         <sql>
             CREATE TABLE IF NOT EXISTS flight (
-            id INT PRIMARY KEY AUTO_INCREMENT,
+            id INT PRIMARY KEY  AUTO_INCREMENT,
             flight_no VARCHAR(10) NOT NULL,
             departure_date DATE NOT NULL,
             departure_airport_code VARCHAR(10) NOT NULL,
             arrival_date DATE NOT NULL,
             arrival_airport_code VARCHAR(10) NOT NULL,
             aircraft_id INT NOT NULL,
-            status VARCHAR(10) NOT NULL,
+            status ENUM('ARRIVED', 'CANCELLED', 'DEPARTED', 'SCHEDULED'),
             FOREIGN KEY(departure_airport_code) REFERENCES airport (code),
             FOREIGN KEY(arrival_airport_code) REFERENCES airport(code),
             FOREIGN KEY (aircraft_id) REFERENCES aircraft(id));
@@ -57,9 +58,91 @@
             flight_id INT NOT NULL,
             seat_no VARCHAR(10) NOT NULL,
             cost DECIMAL(10,2) NOT NULL,
-            FOREIGN KEY (flight_id) REFERENCES flight(id),
-            FOREIGN KEY (flight_id, seat_no) REFERENCES seat(aircraft_id, seat_no)
+            FOREIGN KEY (flight_id) REFERENCES flight(id) ON DELETE CASCADE,
+            FOREIGN KEY (flight_id, seat_no) REFERENCES seat(aircraft_id, seat_no )
             );
         </sql>
     </changeSet>
+    <changeSet id="6" author="Volkova_Natallia">
+        <sql>
+            INSERT INTO airport (code, country, city)
+            VALUES ('JFK', 'USA', 'New York'),
+            ('LHR', 'UK', 'London'),
+            ('CDG', 'France', 'Paris'),
+            ('LCA', 'Cyprus', 'Larnaca'),
+            ('DME', 'Russia', 'Moscow'),
+            ('IBZ', 'Spain', 'Ibiza'),
+            ('IST', 'Turkey', 'Istanbul'),
+            ('MXP', 'Italy', 'Milan'),
+            ('MSQ', 'Belarus', 'Minsk'),
+            ('DPS', 'Indonesia', 'Bali'),
+            ('DXB', 'UAE', 'Dubai'),
+            ('SSH', 'Egypt', 'Sharm el Sheikh'),
+            ('BCN', 'Spain', 'Barcelona');
+        </sql>
+    </changeSet>
+    <changeSet id="7" author="Volkova_Natallia">
+        <sql>
+            INSERT INTO aircraft (model)
+            VALUES ('Boeing 737'),
+            ('Boeing 777'),
+            ('Boeing 845'),
+            ('Aeroflot 777'),
+            ('Aeroflot 100'),
+            ('FlyDubai 150');
+        </sql>
+    </changeSet>
+    <changeSet id="8" author="Volkova_Natallia">
+        <sql>
+            INSERT INTO seat (aircraft_id, seat_no)
+            VALUES (1, 'A1'),
+            (1,'B1'),
+            (2, 'A2'),
+            (2, 'B2'),
+            (3, 'A3'),
+            (3, 'B3'),
+            (4, 'A4'),
+            (4, 'B4'),
+            (5, 'A5'),
+            (5, 'B5'),
+            (6, 'A6'),
+            (6, 'B6');
+
+
+        </sql>
+    </changeSet>
+    <changeSet id="9" author="Volkova_Natallia">
+        <sql>
+            INSERT INTO flight (flight_no, departure_date, departure_airport_code, arrival_date, arrival_airport_code, aircraft_id, status)
+            VALUES ('FL001', '2024-05-10', 'JFK', '2022-05-20', 'LHR', 1, 'SCHEDULED'),
+            ('FL002', '2024-06-15', 'LHR', '2024-06-27', 'CDG', 2, 'DEPARTED'),
+            ('FL003', '2024-07-20', 'CDG', '2024-07-30', 'MXP', 3, 'CANCELLED'),
+            ('FL004', '2024-09-09', 'MXP', '2024-09-20', 'MXP', 4, 'ARRIVED'),
+            ('FL005', '2024-10-01', 'LCA', '2024-10-12', 'LCA', 5, 'DEPARTED'),
+            ('FL006', '2023-12-30', 'DXB', '2024-01-15', 'DXB', 6, 'DEPARTED');
+<!--            ('FL007', '2024-12-28', 'MSQ', '2024-12-31', 'MSQ', 2, 'SCHEDULED'),-->
+<!--            ('FL008', '2024-11-30', 'LHR', '2024-12-30', 'LHR', 3, 'ARRIVED'),-->
+<!--            ('FL009', '2024-12-15', 'IBZ', '2024-12-25', 'IBZ', 4, 'SCHEDULED'),-->
+<!--            ('FL010', '2024-04-18', 'BCN', '2024-04-29', 'BCN', 2, 'ARRIVED');-->
+        </sql>
+    </changeSet>
+    <changeSet id="10" author="Volkova_Natallia">
+        <sql>
+            INSERT INTO ticket (passport_no, passenger_name, flight_id, seat_no, cost)
+            VALUES ('ABC123', 'John Smith', 1 , 'A1', 500.00),
+            ('DEF456', 'Jane Doe', 2, 'A2', 600.00),
+            ('GHI789', 'Bob Johnson', 3, 'A3', 700.00),
+            ('KJH385', 'Mike Jordan', 4, 'A4', 450.00),
+            ('KLJ123', 'Tom Tailor', 1, 'B1', 759.00),
+            ('SDF645', 'Ann Simpson', 2, 'B2', 835.00),
+            ('XCV906', 'Nata Volkova', 3, 'B3', 374.00),
+            ('MKJ194', 'Alex Jacson', 5, 'A5', 799.00),
+            ('AWS812', 'Mat Senatre', 6, 'A6', 700.00),
+            ('AWS812', 'Ann Senatre', 6, 'B6', 700.00);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
+
+
+
+
