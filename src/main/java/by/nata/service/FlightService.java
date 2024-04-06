@@ -39,7 +39,7 @@ public class FlightService {
             Flight flight = flightOptional.get();
             boolean deleted = flightDao.delete(flight.getId());
             if (deleted) {
-                return true; // Удаление успешно
+                return true;
             }
 
         }

@@ -6,6 +6,7 @@ import by.nata.entity.FlightStatus;
 import by.nata.exception.DaoException;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,8 @@ public class FlightDao implements Dao<Long, Flight>{
             """;
     @Override
     public boolean update(Flight flight) {
+      //  LocalDateTime departureDate = flight.getDepartureDate();
+      //  String departureDateStr = departureDate != null ? departureDate.toString() : null;
         String departureDateStr = flight.getDepartureDate().toString();
         String arrivalDateStr = flight.getDepartureDate().toString();
         try(var connection = JdbcUtil.getConnection();

@@ -4,6 +4,7 @@ import by.nata.config.JdbcUtil;
 import by.nata.dto.TicketFilter;
 import by.nata.entity.Ticket;
 import by.nata.exception.DaoException;
+import by.nata.service.FlightService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -60,6 +61,9 @@ public class TicketDao implements Dao<Long, Ticket>{
         }
         @Override
         public boolean update(Ticket ticket){
+            if (ticket == null || ticket.getFlight() == null) {
+                throw new IllegalArgumentException("Ticket or Flight cannot be null");
+            }
             try(var connection = JdbcUtil.getConnection();
                 var statement = connection.prepareStatement(UPDATE_SQL)){
                 statement.setString(1,ticket.getPassportNo());
@@ -69,7 +73,11 @@ public class TicketDao implements Dao<Long, Ticket>{
                 statement.setBigDecimal(5, ticket.getCost());
                 statement.setLong(6, ticket.getId());
 
-                return statement.executeUpdate() > 0;
+                boolean ticketUpdated = statement.executeUpdate() > 0;
+                if (ticketUpdated) {
+                    FlightDao.getInstance().update(ticket.getFlight());
+                }
+                return ticketUpdated;
             }catch (SQLException e){
                 throw new DaoException(e);
             } catch (ClassNotFoundException e) {
@@ -132,15 +140,6 @@ public class TicketDao implements Dao<Long, Ticket>{
         }
 
         private Ticket buildTicket(ResultSet result) throws SQLException {
-     /*   var flight = new Flight(
-                result.getLong("flight_id"),
-                result.getString("flight_no"),
-                result.getTimestamp("departure_date").toLocalDateTime(),
-                result.getString("departure_airport_code"),
-                result.getTimestamp("arrival_date").toLocalDateTime(),
-                result.getString("arrival_airport_code"),
-                result.getInt("aircraft_id"),
-                FlightStatus.valueOf(result.getString("status")));*/
 
             return new Ticket(result.getLong("id"),
                     result.getString("passport_no"),

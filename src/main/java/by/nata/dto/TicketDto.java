@@ -20,12 +20,13 @@ public class TicketDto {
         this.cost = cost;
     }
 
-    public TicketDto() {
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
+
+    public TicketDto() {
+    }
+
 
     public Long getId() {
         return id;

@@ -62,7 +62,7 @@ public class JsonUtils {
             TicketDto ticketDto = new TicketDto(id, passportNo, passengerName,
                     new FlightDto(flightId, flightNo, departureDate, departureAirportCode, arrivalDate,
                             arrivalAirportCode, aircraftId, status), jsonObject.getString("seatNo"),
-                    new BigDecimal(jsonObject.getString("cost")));
+                    jsonObject.getBigDecimal("cost"));
 
             return ticketDto;
         } catch (JSONException e) {

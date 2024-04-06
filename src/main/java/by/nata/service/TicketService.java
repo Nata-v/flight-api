@@ -6,6 +6,7 @@ import by.nata.dto.TicketFilterDto;
 import by.nata.entity.Flight;
 import by.nata.entity.Ticket;
 import by.nata.mapper.MapperUtils;
+import by.nata.repository.FlightDao;
 import by.nata.repository.TicketDao;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import static by.nata.mapper.MapperUtils.*;
 public class TicketService {
     private final static TicketService INSTANCE = new TicketService();
     private final TicketDao ticketDao = TicketDao.getInstance();
+    private final FlightDao flightDao = FlightDao.getInstance();
 
     public List<TicketFilterDto> findAllByFlightId (Long flightId){
         return ticketDao.findAllByFlightId(flightId).stream().map(
@@ -56,16 +58,45 @@ public class TicketService {
         Ticket savedTicket = ticketDao.save(ticket);
         return mapToTicketDto(savedTicket);
     }
-    public TicketDto update(TicketDto ticketDto) {
-        Ticket ticket = mapToEntityTicket(ticketDto);
-        boolean updatedTicket = ticketDao.update(ticket);
-        if (updatedTicket) {
-            return mapToTicketDto(ticket);
-        } else {
-            throw new RuntimeException("Failed to update ticket.");
-        }
-    }
+//    public TicketDto update(TicketDto ticketDto) {
+//        Ticket ticket = mapToEntityTicket(ticketDto);
+//        boolean updatedTicket = ticketDao.update(ticket);
+//        if (updatedTicket) {
+//            return mapToTicketDto(ticket);
+//        } else {
+//            throw new RuntimeException("Failed to update ticket.");
+//        }
+//    }
 
+//    public TicketDto update(TicketDto ticketDto) {
+//        Ticket ticket = mapToEntityTicket(ticketDto);
+//        boolean updatedTicket = ticketDao.update(ticket);
+//
+//        if (updatedTicket) {
+//            Flight flight = mapToEntityFlight(ticketDto.getFlight());
+//            flightDao.update(flight);
+//
+//            return mapToTicketDto(ticket);
+//        } else {
+//            throw new RuntimeException("Failed to update ticket.");
+//        }
+//    }
+public TicketDto update(TicketDto ticketDto) {
+    Ticket ticket = mapToEntityTicket(ticketDto);
+    boolean updatedTicket = ticketDao.update(ticket);
+
+    if (updatedTicket) {
+        // Обновляем информацию о полете, если она изменена в ticketDto
+        if (ticketDto.getFlight() != null) {
+            Flight flight = mapToEntityFlight(ticketDto.getFlight());
+            flightDao.update(flight);
+        }
+
+        return mapToTicketDto(ticket);
+    } else {
+        throw new RuntimeException("Failed to update ticket.");
+    }
+}
 
 
 

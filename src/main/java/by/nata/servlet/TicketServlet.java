@@ -20,6 +20,8 @@ import java.util.Optional;
 public class TicketServlet extends HttpServlet {
     private final TicketService ticketService = TicketService.getInstance();
 
+
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
@@ -150,12 +152,10 @@ public class TicketServlet extends HttpServlet {
     }
 
 
-
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
-
 
         // Получаем данные о билете из запроса
         BufferedReader reader = req.getReader();
@@ -174,64 +174,6 @@ public class TicketServlet extends HttpServlet {
         String json = JsonUtils.mapToTicketJson(updatedTicketDto);
         resp.getWriter().write(json);
     }
-//@Override
-//protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//    resp.setContentType("application/json");
-//    resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
-//
-//    // Извлекаем ID билета из URL запроса
-//    String requestURI = req.getRequestURI();
-//    String[] parts = requestURI.split("/");
-//    String lastPart = parts[parts.length - 1]; // Получаем последнюю часть URI
-//    Long ticketId;
-//    try {
-//        ticketId = Long.parseLong(lastPart);
-//    } catch (NumberFormatException e) {
-//        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//        resp.getWriter().write("400 - Bad Request: Invalid ticket ID");
-//        return;
-//    }
-//
-//    // Получаем данные о билете из тела запроса
-//    BufferedReader reader = req.getReader();
-//    StringBuilder requestBody = new StringBuilder();
-//    String line;
-//    while ((line = reader.readLine()) != null) {
-//        requestBody.append(line);
-//    }
-//    String jsonBody = requestBody.toString();
-//
-//    // Десериализация JSON в объект TicketDto
-//    TicketDto ticketDto = JsonUtils.deserializeTicketDto(jsonBody);
-//    ticketDto.setId(ticketId); // Устанавливаем ID билета
-//
-//    TicketDto updatedTicketDto = ticketService.update(ticketDto);
-//
-//    // Отправляем ответ
-//    String json = JsonUtils.mapToTicketJson(updatedTicketDto);
-//    resp.getWriter().write(json);
-//}
+
 }
-//{
-//    "id": 1,
-//        "passportNo": "AB1234567",
-//        "passengerName": "John Doe",
-//        "flight": {
-//    "id": 2,
-//            "flightNo": "ABC123",
-//            "departureDate": "2024-02-20T10:00:00",
-//            "departureAirportCode": "LHR",
-//            "arrivalDate": "2024-02-20T12:00:00",
-//            "arrivalAirportCode": "CDG",
-//            "aircraftId": 2,
-//            "status": "DEPARTED"
-//},
-//    "seatNo": "A2",
-//        "cost": "100.00"
-//
-//}
-//
-//        {
-//        "id": 2,
-//        "cost": 1150.00
-//        }
+
